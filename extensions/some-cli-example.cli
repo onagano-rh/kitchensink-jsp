@@ -1,0 +1,27 @@
+embed-server --std-out=echo  --server-config=standalone-openshift.xml
+
+# Register PostgreSQL JDBC driver
+
+/subsystem=datasources/jdbc-driver=postgresql:add( \
+  driver-name=postgresql, \
+  driver-module-name=org.postgresql, \
+  driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource )
+
+# Create a datasource named KitchensinkJSPQuickstartDS
+
+xa-data-source add \
+  --name=KitchensinkJSPQuickstartDS \
+  --jndi-name=java:jboss/datasources/KitchensinkJSPQuickstartDS \
+  --driver-name=postgresql \
+  --user-name=pguser \
+  --password=pgpassword \
+  --validate-on-match=true \
+  --background-validation=false \
+  --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker \
+  --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter \
+  --xa-datasource-properties={ \
+    "ServerName"=>"postgresql", \
+    "PortNumber"=>"5432", \
+    "DatabaseName"=>"pgdatabase" }
+
+quit
