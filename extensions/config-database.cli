@@ -13,15 +13,15 @@ xa-data-source add \
   --name=KitchensinkJSPQuickstartDS \
   --jndi-name=java:jboss/datasources/KitchensinkJSPQuickstartDS \
   --driver-name=postgresql \
-  --user-name=pguser \
-  --password=pgpassword \
+  --user-name=${env.MYDB_USERNAME} \
+  --password=${env.MYDB_PASSWORD} \
   --validate-on-match=true \
   --background-validation=false \
   --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker \
   --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter \
   --xa-datasource-properties={ \
-    "ServerName"=>"postgresql", \
-    "PortNumber"=>"5432", \
-    "DatabaseName"=>"pgdatabase" }
+    "ServerName"=>"${env.MYDB_SERVER}", \
+    "PortNumber"=>"${env.MYDB_PORT", \
+    "DatabaseName"=>"${env.MYDB_DATABASE" }
 
 quit
