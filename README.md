@@ -394,3 +394,26 @@ oc new-app --template=eap74-basic-s2i \
 
 `MYDB_` で始まるDB接続情報は自分で作成したPostgreSQLのものに合わせる。
 
+## 様々なocコマンド
+
+```shell
+# ビルドの様子を確認
+oc logs -f bc/myapp-build-artifacts
+
+# (コードを編集してpush後に)ビルドを再開
+oc start-build myapp --follow --incremental
+
+# oc new-appで作成されたリソースを全て削除
+oc delete all -l application=myapp
+```
+
+## 動作確認
+
+```shell
+# Routeの確認 ("https://"を付けてブラウザでアクセス)
+oc get route
+
+# DBのデータの確認 (実際のポッド名は `oc get pod` で確認)
+oc rsh postgresql-1-XXXXX psql -U pguser pgdatabase
+```
+
