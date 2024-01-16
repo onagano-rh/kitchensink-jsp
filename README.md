@@ -296,8 +296,8 @@ xa-data-source add \
   --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter \
   --xa-datasource-properties={ \
     "ServerName"=>"${env.MYDB_SERVER}", \
-    "PortNumber"=>"${env.MYDB_PORT", \
-    "DatabaseName"=>"${env.MYDB_DATABASE" }
+    "PortNumber"=>"${env.MYDB_PORT}", \
+    "DatabaseName"=>"${env.MYDB_DATABASE}" }
 
 quit
 ```
@@ -362,3 +362,35 @@ git commit -m "initial commit"
 
 git push -u origin main
 ```
+
+## ソースコード取得用のSecretの作成
+
+リポジトリをプライベートで作成したのでそのままでは取得に失敗する。
+後の`oc new-app`で使用するために自分のSSH秘密鍵をSecretとして作成しておく。
+
+```shell
+oc create secret generic my-github-key \
+  --from-file=ssh-privatekey=${HOME}/.ssh/id_rsa --type=kubernetes.io/ssh-auth
+```
+
+## アプリのビルドとデプロイ
+
+```shell
+oc new-app --template=eap74-basic-s2i \
+  -p APPLICATION_NAME=myapp  \
+  -p IMAGE_STREAM_NAMESPACE=$(oc project -q) \
+  -p EAP_IMAGE_NAME=jboss-eap74-openjdk17-openshift:latest \
+  -p EAP_RUNTIME_IMAGE_NAME=jboss-eap74-openjdk17-runtime-openshift:latest \
+  -p SOURCE_REPOSITORY_URL=git@github.com:<自分のアカウント名>/kitchensink-jsp.git \
+  -p SOURCE_REPOSITORY_REF=main \
+  -p CONTEXT_DIR="" \
+  --source-secret=my-github-key \
+  -e MYDB_USERNAME=pguser \
+  -e MYDB_PASSWORD=pgpassword \
+  -e MYDB_DATABASE=pgdatabase \
+  -e MYDB_SERVER=postgresql \
+  -e MYDB_PORT=5432
+```
+
+`MYDB_` で始まるDB接続情報は自分で作成したPostgreSQLのものに合わせる。
+
