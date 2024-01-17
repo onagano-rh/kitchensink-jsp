@@ -133,19 +133,28 @@ JBoss CLI内の `module add` のコマンドは、DBごとに [開発ガイド][
 
 [devguide]: https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/datasource_management#example_postgresql_xa_datasource
 
+## アプリのアンデプロイ
+
+既存のデータソースをいったん削除するためにアンデプロイする。
+
+```shell
+cd ~/work/kitchensink-jsp
+mvn wildfly:undeploy # 一旦アンデプロイする
+```
+
 ## サーバにドライバとデータソースを登録
 
 EAPが起動済みの状態で行う必要がある。
 
 ```shell
-$JBOSS_CLI/bin/jboss-cli.sh -c
+$JBOSS_HOME/bin/jboss-cli.sh -c
 
 # ドライバの登録
 [standalone@localhost:9990 /] /subsystem=datasources/jdbc-driver=postgresql:add( \
   driver-name=postgresql,driver-module-name=org.postgresql, \
   driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
 
-# データソースの登録（データソース名やJNDI名、ユーザ名やパスワード等を実際のものに合わせること）
+# データソースの登録（JNDI名、ユーザ名やパスワード等を実際のものに合わせること）
 [standalone@localhost:9990 /] xa-data-source add --name=KitchensinkJSPQuickstartDS \
   --jndi-name=java:jboss/datasources/KitchensinkJSPQuickstartDS --driver-name=postgresql \
   --user-name=pguser --password=pgpassword --validate-on-match=true --background-validation=false \
@@ -155,7 +164,7 @@ $JBOSS_CLI/bin/jboss-cli.sh -c
 ```
 
 ユーザ名やパスワード、DB名はDockerでのコンテナ作成時に自分で指定したものに合わせる。
-データソース名とJNDI名はソースコード内の ./src/main/resources/META-INF/persistence.xml に書いてある。
+JNDI名はソースコード内の ./src/main/resources/META-INF/persistence.xml に書いてある。
 
 これも [開発ガイド][devguide] にコマンド例があるので覚える必要はない。
 
@@ -163,7 +172,6 @@ $JBOSS_CLI/bin/jboss-cli.sh -c
 
 ```shell
 cd ~/work/kitchensink-jsp
-mvn wildfly:undeploy # 一旦アンデプロイする
 
 # 内臓DBを使ったデータソースの定義を削除する
 rm src/main/webapp/WEB-INF/kitchensink-quickstart-ds.xml
