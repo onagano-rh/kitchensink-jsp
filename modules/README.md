@@ -2,34 +2,28 @@
 
 1. Download a driver you want from the Maven repository
 
-    # PostgreSQL: ~/.m2/repository/org/postgresql/postgresql/42.7.1/postgresql-42.7.1.jar
-    mvn dependency:get -Dartifact=org.postgresql:postgresql:42.7.1
-    # MySQL: ~/.m2/repository/com/mysql/mysql-connector-j/8.2.0/mysql-connector-j-8.2.0.jar
-    mvn dependency:get -Dartifact=com.mysql:mysql-connector-j:8.2.0
-    # Oracle: ~/.m2/repository/com/oracle/database/jdbc/ojdbc11/23.2.0.0/ojdbc11-23.2.0.0.jar
-    mvn dependency:get -Dartifact=com.oracle.database.jdbc:ojdbc11:23.2.0.0
-    # IBM DB2: ~/.m2/repository/com/ibm/db2/jcc/11.5.8.0/jcc-11.5.8.0.jar
-    mvn dependency:get -Dartifact=com.ibm.db2:jcc:11.5.8.0
+    # IBM DB2 for iSeriese (AS400): ls ~/.m2/repository/net/sf/jt400/jt400/20.0.6/jt400-20.0.6.jar
+    mvn dependency:get -Dartifact=net.sf.jt400:jt400:20.0.6
 
 2. Install the driver as a module
 
-Here is an example of PostgreSQL.
+Here is example of IBM DB2 for AS400.
 You can find other JBoss CLI `module add` command examples in the Configu Guide.
 
     cd $JBOSS_HOME
     ./bin/jboss-cli.sh
-    [disconnected /] module add --name=org.postgresql --resources=~/.m2/repository/org/postgresql/postgresql/42.7.1/postgresql-42.7.1.jar --dependencies=javaee.api,sun.jdk,ibm.jdk,javax.api,javax.transaction.api
+    [disconnected /] module add --name=com.ibm --resources=~/.m2/repository/net/sf/jt400/jt400/20.0.6/jt400-20.0.6.jar --dependencies=javax.api,javax.transaction.api
     [disconnected /] exit
 
 3. Configure the driver and a datasource using it in standalone.xml
 
-Here is an example of PostgreSQL.
+Here is example of IBM DB2 for AS400 (non-XA).
 You can find other JBoss CLI `module add` command examples in the Configu Guide.
 
     # Start server first so that you can connect to it by JBoss CLI
     $JBOSS_HOME/bin/jboss-cli.sh -c
-    [standalone@localhost:9990 /] /subsystem=datasources/jdbc-driver=postgresql:add(driver-name=postgresql,driver-module-name=org.postgresql,driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
-    [standalone@localhost:9990 /] xa-data-source add --name=PostgresXADS --jndi-name=java:jboss/PostgresXADS --driver-name=postgresql --user-name=admin --password=admin --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter --xa-datasource-properties={"ServerName"=>"localhost","PortNumber"=>"5432","DatabaseName"=>"postgresdb"}
+    [standalone@localhost:9990 /] /subsystem=datasources/jdbc-driver=ibmdb2:add(driver-name=ibmdb2,driver-module-name=com.ibm,driver-class-name=com.ibm.as400.access.AS400JDBCDriver)
+    [standalone@localhost:9990 /] data-source add --name=DB2DS --jndi-name=java:jboss/DB2DS --driver-name=ibmdb2 --connection-url=jdbc:as400://192.1.1.118;libraries=JPIDTA_KR1; --user-name=UNWUPF1 --password=UNWUPF1 --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.db2.DB2ValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.db2.DB2ExceptionSorter --min-pool-size=0 --max-pool-size=50
 
 Change the datasource configuration to what you want.
 

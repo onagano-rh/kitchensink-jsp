@@ -1,27 +1,26 @@
 embed-server --std-out=echo  --server-config=standalone-openshift.xml
 
-# Register PostgreSQL JDBC driver
+# Register IBM DB2 for AS400 JDBC driver
 
-/subsystem=datasources/jdbc-driver=postgresql:add( \
-  driver-name=postgresql, \
-  driver-module-name=org.postgresql, \
-  driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource )
+/subsystem=datasources/jdbc-driver=ibmdb2:add( \
+  driver-name=ibmdb2, \
+  driver-module-name=com.ibm, \
+  driver-class-name=com.ibm.as400.access.AS400JDBCDriver )
 
 # Create a datasource named KitchensinkJSPQuickstartDS
 
-xa-data-source add \
+data-source add \
   --name=KitchensinkJSPQuickstartDS \
   --jndi-name=java:jboss/datasources/KitchensinkJSPQuickstartDS \
-  --driver-name=postgresql \
+  --driver-name=ibmdb2 \
+  --connection-url=jdbc:as400://${env.MYDB_SERVER};libraries=${env.MYDB_DATABASE}; \
   --user-name=${env.MYDB_USERNAME} \
   --password=${env.MYDB_PASSWORD} \
   --validate-on-match=true \
   --background-validation=false \
-  --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker \
-  --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter \
-  --xa-datasource-properties={ \
-    "ServerName"=>"${env.MYDB_SERVER}", \
-    "PortNumber"=>"${env.MYDB_PORT}", \
-    "DatabaseName"=>"${env.MYDB_DATABASE}" }
+  --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.db2.DB2ValidConnectionChecker \
+  --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.db2.DB2ExceptionSorter \
+  --min-pool-size=0 \
+  --max-pool-size=50
 
 quit
