@@ -83,7 +83,7 @@ Docker Hubにある [公式イメージ](https://hub.docker.com/_/postgres) を�
 ```shell
 docker run -d --name mypgserver  -p 5432:5432 \
   -e POSTGRES_USER=pguser -e POSTGRES_PASSWORD=pgpassword -e POSTGRES_DB=pgdatabase \
-  docker.io/library/postgres:15
+  docker.io/library/postgres:13
 ```
 
 `docker.io/library/postgres` はイメージのフルネームであり、Docker Hubに限っては `postgres` だけでも動作する。
@@ -337,7 +337,7 @@ oc describe template postgresql-persistent -n openshift
 
 # 必要なパラメタを指定してTemplateを適用する
 oc new-app --template=postgresql-persistent \
-  -p POSTGRESQL_VERSION=15-el8 -p POSTGRESQL_USER=pguser \
+  -p POSTGRESQL_VERSION=13-el8 -p POSTGRESQL_USER=pguser \
   -p POSTGRESQL_PASSWORD=pgpassword -p POSTGRESQL_DATABASE=pgdatabase
 ```
 
@@ -409,7 +409,7 @@ oc new-app --template=eap74-basic-s2i \
 oc logs -f bc/myapp-build-artifacts
 
 # (コードを編集してpush後に)ビルドを再開
-oc start-build myapp --follow --incremental
+oc start-build myapp-build-artifacts --follow --incremental
 
 # oc new-appで作成されたリソースを全て削除
 oc delete all -l application=myapp
