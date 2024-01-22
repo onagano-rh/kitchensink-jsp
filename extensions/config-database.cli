@@ -2,17 +2,17 @@ embed-server --std-out=echo  --server-config=standalone-openshift.xml
 
 # Register IBM DB2 for AS400 JDBC driver
 
-/subsystem=datasources/jdbc-driver=ibmdb2:add( \
-  driver-name=ibmdb2, \
-  driver-module-name=com.ibm, \
-  driver-class-name=com.ibm.as400.access.AS400JDBCDriver )
+/subsystem=datasources/jdbc-driver=ibmdb2as400:add( \
+  driver-name=ibmdb2as400, \
+  driver-module-name=com.ibm.as400, \
+  driver-xa-datasource-class-name=com.ibm.as400.access.AS400JDBCXADataSource )
 
 # Create a datasource named KitchensinkJSPQuickstartDS
 
 data-source add \
   --name=KitchensinkJSPQuickstartDS \
   --jndi-name=java:jboss/datasources/KitchensinkJSPQuickstartDS \
-  --driver-name=ibmdb2 \
+  --driver-name=ibmdb2as400 \
   --connection-url=jdbc:as400://${env.MYDB_SERVER};libraries=${env.MYDB_DATABASE}; \
   --user-name=${env.MYDB_USERNAME} \
   --password=${env.MYDB_PASSWORD} \

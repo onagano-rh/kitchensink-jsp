@@ -12,7 +12,7 @@ You can find other JBoss CLI `module add` command examples in the Configu Guide.
 
     cd $JBOSS_HOME
     ./bin/jboss-cli.sh
-    [disconnected /] module add --name=com.ibm --resources=~/.m2/repository/net/sf/jt400/jt400/20.0.6/jt400-20.0.6.jar --dependencies=javax.api,javax.transaction.api
+    [disconnected /] module add --name=com.ibm.as400 --resources=~/.m2/repository/net/sf/jt400/jt400/20.0.6/jt400-20.0.6.jar --dependencies=javaee.api,sun.jdk,ibm.jdk,javax.api,javax.transaction.api
     [disconnected /] exit
 
 3. Configure the driver and a datasource using it in standalone.xml
@@ -22,8 +22,8 @@ You can find other JBoss CLI `module add` command examples in the Configu Guide.
 
     # Start server first so that you can connect to it by JBoss CLI
     $JBOSS_HOME/bin/jboss-cli.sh -c
-    [standalone@localhost:9990 /] /subsystem=datasources/jdbc-driver=ibmdb2:add(driver-name=ibmdb2,driver-module-name=com.ibm,driver-class-name=com.ibm.as400.access.AS400JDBCDriver)
-    [standalone@localhost:9990 /] data-source add --name=DB2DS --jndi-name=java:jboss/DB2DS --driver-name=ibmdb2 --connection-url=jdbc:as400://192.1.1.118;libraries=JPIDTA_KR1; --user-name=UNWUPF1 --password=UNWUPF1 --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.db2.DB2ValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.db2.DB2ExceptionSorter --min-pool-size=0 --max-pool-size=50
+    [standalone@localhost:9990 /] /subsystem=datasources/jdbc-driver=ibmdb2as400:add(driver-name=ibmdb2as400,driver-module-name=com.ibm.as400,driver-xa-datasource-class-name=com.ibm.as400.access.AS400JDBCXADataSource)
+    [standalone@localhost:9990 /] data-source add --name=DB2DS --jndi-name=java:jboss/DB2DS --driver-name=ibmdb2as400 --connection-url=jdbc:as400://localhost;libraries=ibmdb2db; --user-name=admin --password=admin --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.db2.DB2ValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.db2.DB2ExceptionSorter --min-pool-size=0 --max-pool-size=50
 
 Change the datasource configuration to what you want.
 
