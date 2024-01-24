@@ -6,6 +6,11 @@ paginate: true
 headingDivider: 2
 ---
 
+本スライドのソース:
+
+- [onagano-rh/kitchenshink-jsp](https://github.com/onagano-rh/kitchensink-jsp) のREADME.mdを [Marp](https://github.com/marp-team/marp-cli) で変換
+  - 当初プライベートリポジトリとして作成したが、パブリックでも `--source-secret` の例にはなるので公開した
+
 # 概要
 
 ## はじめに (1/2)
