@@ -2,6 +2,7 @@
 
 1. Download a driver you want from the Maven repository
 
+```shell
     # PostgreSQL: ~/.m2/repository/org/postgresql/postgresql/42.7.1/postgresql-42.7.1.jar
     mvn dependency:get -Dartifact=org.postgresql:postgresql:42.7.1
     # MySQL: ~/.m2/repository/com/mysql/mysql-connector-j/8.2.0/mysql-connector-j-8.2.0.jar
@@ -10,6 +11,7 @@
     mvn dependency:get -Dartifact=com.oracle.database.jdbc:ojdbc11:23.2.0.0
     # IBM DB2: ~/.m2/repository/com/ibm/db2/jcc/11.5.8.0/jcc-11.5.8.0.jar
     mvn dependency:get -Dartifact=com.ibm.db2:jcc:11.5.8.0
+```
 
 2. Install the driver as a module
 
