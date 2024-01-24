@@ -87,7 +87,7 @@ Docker Hubにある [公式イメージ](https://hub.docker.com/_/postgres) を�
 
 ```shell
 docker run -d --name mypgserver  -p 5432:5432 \
-  -e POSTGRES_USER=pguser -e POSTGRES_PASSWORD=pgpassword -e POSTGRES_DB=pgdatabase \
+  -e POSTGRES_USER=pgusername -e POSTGRES_PASSWORD=pgpassword -e POSTGRES_DB=pgdatabase \
   docker.io/library/postgres:13
 ```
 
@@ -100,7 +100,7 @@ docker stop mypgserver # 停止
 docker start mypgserver # 再起動
 
 # psqlコマンドで接続
-docker exec -it mypgserver psql -U pguser pgdatabase
+docker exec -it mypgserver psql -U pgusername pgdatabase
 
 dokcer rm mypgserver # (停止後に)削除
 ```
@@ -162,7 +162,7 @@ $JBOSS_HOME/bin/jboss-cli.sh -c
 # データソースの登録（JNDI名、ユーザ名やパスワード等を実際のものに合わせること）
 [standalone@localhost:9990 /] xa-data-source add --name=KitchensinkJSPQuickstartDS \
   --jndi-name=java:jboss/datasources/KitchensinkJSPQuickstartDS --driver-name=postgresql \
-  --user-name=pguser --password=pgpassword --validate-on-match=true --background-validation=false \
+  --user-name=pgusername --password=pgpassword --validate-on-match=true --background-validation=false \
   --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker \
   --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter \
   --xa-datasource-properties={"ServerName"=>"localhost","PortNumber"=>"5432","DatabaseName"=>"pgdatabase"}
@@ -309,7 +309,7 @@ xa-data-source add \
   --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter \
   --xa-datasource-properties={ \
     "ServerName"=>"${env.MYDB_SERVER}", \
-    "PortNumber"=>"${env.MYDB_PORT}", \
+    "PortNumber"=>"${env.MYDB_PORT:5432}", \
     "DatabaseName"=>"${env.MYDB_DATABASE}" }
 
 quit
@@ -341,9 +341,9 @@ modules/org/postgresql/main/module.xml
 oc describe template postgresql-persistent -n openshift
 
 # 必要なパラメタを指定してTemplateを適用する
-oc new-app --template=postgresql-persistent \
-  -p POSTGRESQL_VERSION=13-el8 -p POSTGRESQL_USER=pguser \
-  -p POSTGRESQL_PASSWORD=pgpassword -p POSTGRESQL_DATABASE=pgdatabase
+oc new-app --template=postgresql-persistent -p POSTGRESQL_VERSION=13-el8 \
+  -p POSTGRESQL_USER=pgusername -p POSTGRESQL_PASSWORD=pgpassword \
+  -p POSTGRESQL_DATABASE=pgdatabase -p DATABASE_SERVICE_NAME=mypgserver
 ```
 
 そのうちPostgreSQLのポッドが起動するので `oc get pod` でポッド名を確認し `oc logs -f postgresql-1-XXXXX` でログを見たりしてみる。
@@ -389,20 +389,22 @@ oc create secret generic my-github-key \
 ## アプリのビルドとデプロイ
 
 ```shell
+# アカウント名の部分を自分のものに変えること
+MY_GITHUB_REPOSITORY=onagano-rh/kitchensink-jsp
+
 oc new-app --template=eap74-basic-s2i \
   -p APPLICATION_NAME=myapp  \
   -p IMAGE_STREAM_NAMESPACE=$(oc project -q) \
   -p EAP_IMAGE_NAME=jboss-eap74-openjdk17-openshift:latest \
   -p EAP_RUNTIME_IMAGE_NAME=jboss-eap74-openjdk17-runtime-openshift:latest \
-  -p SOURCE_REPOSITORY_URL=git@github.com:<自分のアカウント名>/kitchensink-jsp.git \
+  -p SOURCE_REPOSITORY_URL=git@github.com:${MY_GITHUB_REPOSITORY}/kitchensink-jsp.git \
   -p SOURCE_REPOSITORY_REF=main \
   -p CONTEXT_DIR="" \
   --source-secret=my-github-key \
-  -e MYDB_USERNAME=pguser \
+  -e MYDB_USERNAME=pgusername \
   -e MYDB_PASSWORD=pgpassword \
   -e MYDB_DATABASE=pgdatabase \
-  -e MYDB_SERVER=postgresql \
-  -e MYDB_PORT=5432
+  -e MYDB_SERVER=postgresql
 ```
 
 `MYDB_` で始まるDB接続情報は自分で作成したPostgreSQLのものに合わせる。
@@ -427,6 +429,6 @@ oc delete all -l application=myapp
 oc get route
 
 # DBのデータの確認 (実際のポッド名は `oc get pod` で確認)
-oc rsh postgresql-1-XXXXX psql -U pguser pgdatabase
+oc rsh postgresql-1-XXXXX psql -U pgusername pgdatabase
 ```
 

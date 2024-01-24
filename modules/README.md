@@ -31,7 +31,8 @@ You can find other JBoss CLI `module add` command examples in the Configu Guide.
     # Start server first so that you can connect to it by JBoss CLI
     $JBOSS_HOME/bin/jboss-cli.sh -c
     [standalone@localhost:9990 /] /subsystem=datasources/jdbc-driver=postgresql:add(driver-name=postgresql,driver-module-name=org.postgresql,driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
-    [standalone@localhost:9990 /] xa-data-source add --name=PostgresXADS --jndi-name=java:jboss/PostgresXADS --driver-name=postgresql --user-name=admin --password=admin --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter --xa-datasource-properties={"ServerName"=>"localhost","PortNumber"=>"5432","DatabaseName"=>"postgresdb"}
+    [standalone@localhost:9990 /] 
+    [standalone@localhost:9990 /] xa-data-source add --name=KitchensinkJSPQuickstartDS --jndi-name=java:jboss/datasources/KitchensinkJSPQuickstartDS --driver-name=postgresql --user-name=pgusername --password=pgpassword --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter --xa-datasource-properties={"ServerName"=>"localhost","PortNumber"=>"5432","DatabaseName"=>"pgdatabase"}
 
 Change the datasource configuration to what you want.
 

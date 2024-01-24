@@ -21,7 +21,7 @@ xa-data-source add \
   --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter \
   --xa-datasource-properties={ \
     "ServerName"=>"${env.MYDB_SERVER}", \
-    "PortNumber"=>"${env.MYDB_PORT}", \
+    "PortNumber"=>"${env.MYDB_PORT:5432}", \
     "DatabaseName"=>"${env.MYDB_DATABASE}" }
 
 quit
