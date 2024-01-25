@@ -2,6 +2,7 @@
   "realm": "test-realm",
   "auth-server-url": "https://keycloak-rhbk.apps-crc.testing/",
   "ssl-required": "external",
+  "disable-trust-manager": true,
   "allow-any-hostname": true,
   "resource": "myapp-kctest",
   "public-client": true,
