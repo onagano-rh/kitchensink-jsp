@@ -397,14 +397,14 @@ oc new-app --template=eap74-basic-s2i \
   -p IMAGE_STREAM_NAMESPACE=$(oc project -q) \
   -p EAP_IMAGE_NAME=jboss-eap74-openjdk17-openshift:latest \
   -p EAP_RUNTIME_IMAGE_NAME=jboss-eap74-openjdk17-runtime-openshift:latest \
-  -p SOURCE_REPOSITORY_URL=git@github.com:${MY_GITHUB_REPOSITORY}/kitchensink-jsp.git \
+  -p SOURCE_REPOSITORY_URL=git@github.com:${MY_GITHUB_REPOSITORY}.git \
   -p SOURCE_REPOSITORY_REF=main \
   -p CONTEXT_DIR="" \
   --source-secret=my-github-key \
   -e MYDB_USERNAME=pgusername \
   -e MYDB_PASSWORD=pgpassword \
   -e MYDB_DATABASE=pgdatabase \
-  -e MYDB_SERVER=postgresql
+  -e MYDB_SERVER=mypgserver
 ```
 
 `MYDB_` で始まるDB接続情報は自分で作成したPostgreSQLのものに合わせる。

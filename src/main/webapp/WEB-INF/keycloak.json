@@ -1,0 +1,8 @@
+{
+  "realm": "test-realm",
+  "auth-server-url": "https://keycloak-rhbk.apps-crc.testing/",
+  "ssl-required": "external",
+  "resource": "myapp-kctest",
+  "public-client": true,
+  "confidential-port": 0
+}
