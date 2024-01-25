@@ -53,10 +53,8 @@ else
 end-if
 
 echo Undertow to configure with Keycloak
-/subsystem=undertow/application-security-domain=other:remove()
-/subsystem=undertow/application-security-domain=other:add(http-authentication-factory=keycloak-http-authentication)
+/subsystem=undertow/application-security-domain=other:write-attribute(name=http-authentication-factory,value=keycloak-http-authentication)
 
 echo EJB to configure with Keycloak
-/subsystem=ejb3/application-security-domain=other:remove()
-/subsystem=ejb3/application-security-domain=other:add(security-domain=KeycloakDomain)
+/subsystem=ejb3/application-security-domain=other:write-attribute(name=security-domain,value=KeycloakDomain)
 
